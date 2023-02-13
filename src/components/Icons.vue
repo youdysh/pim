@@ -64,7 +64,6 @@ const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
   let targetLuminance = isDaytime ? 0.8 : 0.2;
 
   if (hue === 0 && saturation === 0) {
-    // This is a grayscale color
     luminance = targetLuminance;
   } else {
     let brightnessDifference = targetLuminance - luminance;

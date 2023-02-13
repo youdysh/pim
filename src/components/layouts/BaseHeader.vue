@@ -4,7 +4,7 @@ import {ref} from "vue";
 import {ElMessage} from 'element-plus'
 import {useFingerprint} from '~/store/fingerprint'
 import {SHA256} from 'crypto-js';
-import BigNumber from "bignumber.js";
+import {hexToOther} from "~/components/util";
 
 const fingerprint = useFingerprint()
 const password = ref("")
@@ -13,9 +13,8 @@ const certified = () => {
   if (password.value !== '' && passwordAgain.value !== '') {
     if (password.value === passwordAgain.value) {
       const sha256 = SHA256(password.value).toString()
-      const bigNumber = new BigNumber(sha256, 16)
-      console.log(bigNumber.toString(40))
-      // fingerprint.setPassword()
+      const baseString = hexToOther(sha256)
+      fingerprint.setPassword(baseString)
       ElMessage.success('认证成功')
     } else {
       ElMessage.warning('两次输入的主密码不一致')
@@ -24,6 +23,7 @@ const certified = () => {
     ElMessage.warning('主密码不能为空')
   }
 }
+
 </script>
 
 <template>
