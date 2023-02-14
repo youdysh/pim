@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {ref, computed, Ref} from 'vue';
+import {ref, computed, Ref, reactive} from 'vue';
 import * as icons from 'simple-icons';
 import type {SimpleIcon} from 'simple-icons';
 import chroma from 'chroma-js';
 import {isDark} from "~/composables";
 import {useFingerprint} from '~/store/fingerprint'
 import {ElMessage} from "element-plus";
-import {passwordAndTitleToCode} from "~/components/util";
+import {hexToOther, passwordAndTitleToCode} from "~/components/util";
+import {SHA256} from "crypto-js";
 
 const fingerprint = useFingerprint()
-
+// 生成密码
 const selectIcon = (icon?: SimpleIcon) => {
-  console.log(fingerprint.password, icon)
   if (fingerprint.password) {
     let title;
     if (icon) {
@@ -22,28 +22,23 @@ const selectIcon = (icon?: SimpleIcon) => {
       return ElMessage.warning('请输入客户端名字或者选择已有客户端')
     }
     const code = passwordAndTitleToCode(fingerprint.password, title)
-    console.log(code)
+    const sha256 = SHA256(code).toString()
+    const baseString = hexToOther(sha256)
+    const password = checkPassword(baseString);
+    drawer.password = password
+    drawer.title = title
+    drawer.open = true
+    // 检查baseString是否拥有数字大小写字母以及符号
+
   } else {
     ElMessage.warning('请先认证')
   }
 };
-
-// 分页
-const pageSize = ref(420);
-const total = computed(() => iconsResult.value.length);
-const currentPage = ref(1);
-const pageIcons = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return iconsResult.value.slice(start, end);
-});
-const resetPage = () => {
-  currentPage.value = 1;
-};
-const handleSizeChange = (val: number) => {
-  currentPage.value = 1;
-  pageSize.value = val;
-};
+const drawer = reactive({
+  password: "",
+  title: "",
+  open: false
+})
 const handleCurrentChange = (val: number) => {
   currentPage.value = val;
 };
@@ -65,11 +60,23 @@ const iconsResult = computed(() => {
   }
   return result;
 });
-
-// 为svg添加颜色
-const getSVG = (svg: string) => {
-  return svg.replace(/<path /g, '<path fill="currentColor" ')
-}
+// 分页
+const pageSize = ref(420);
+const total = computed(() => iconsResult.value.length);
+const currentPage = ref(1);
+const resetPage = () => {
+  currentPage.value = 1;
+};
+const handleSizeChange = (val: number) => {
+  currentPage.value = 1;
+  pageSize.value = val;
+};
+// 分页结果集
+const pageIcons = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return iconsResult.value.slice(start, end);
+});
 // 调整颜色适配白天和黑夜两个模式
 const isDarkNow = computed(() => isDark.value);
 const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
@@ -90,6 +97,10 @@ const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
 
   let newColor = chroma.hsl(hue, saturation, luminance);
   return newColor.hex();
+}
+// 为svg添加颜色
+const getSVG = (svg: string) => {
+  return svg.replace(/<path /g, '<path fill="currentColor" ')
 }
 </script>
 
@@ -120,7 +131,7 @@ const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
         :total="total">
     </el-pagination>
   </div>
-  <el-drawer v-model="drawer" direction="btt">
+  <el-drawer v-model="drawer.open" direction="btt">
 
   </el-drawer>
 </template>

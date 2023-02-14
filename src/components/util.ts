@@ -31,3 +31,20 @@ export const findThirdNumber = (str: string) => {
     }
     return number;
 }
+
+const smallLetters = "abcdefghijklmnopqrstuvwxyz";
+const bigLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const numbers = "0123456789";
+const specialCharacters = "!@?#*,.+-=/";
+export const checkPassword = (password: string) => {
+
+    // const numberCount = password.match(/\d/g)?.length;
+    // const smallLetterCount = password.match(/[a-z]/g)?.length;
+    // const bigLetterCount = password.match(/[A-Z]/g)?.length;
+    // const specialCount = password.match(/[!@?#*,.+-=/]/g)?.length;
+    // if (numberCount === 0) {
+    //     password += smallLetters[smallLetterCount % 24]
+    // }
+
+    return password
+}
