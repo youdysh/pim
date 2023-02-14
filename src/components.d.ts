@@ -8,11 +8,11 @@ declare module '@vue/runtime-core' {
     BaseHeader: typeof import('./components/layouts/BaseHeader.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
-    ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
+    ElDrawer: typeof import('element-plus/es')['ElDrawer']
+    ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
-    HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Icons: typeof import('./components/Icons.vue')['default']
   }
 }

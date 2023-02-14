@@ -1,37 +1,34 @@
 <script setup lang="ts">
 import {ref, computed, Ref} from 'vue';
 import * as icons from 'simple-icons';
+import type {SimpleIcon} from 'simple-icons';
 import chroma from 'chroma-js';
 import {isDark} from "~/composables";
 import {useFingerprint} from '~/store/fingerprint'
 import {ElMessage} from "element-plus";
+import {passwordAndTitleToCode} from "~/components/util";
 
 const fingerprint = useFingerprint()
-const selectIcon = (icon: any) => {
-  console.log(fingerprint.password)
+
+const selectIcon = (icon?: SimpleIcon) => {
+  console.log(fingerprint.password, icon)
   if (fingerprint.password) {
-    ElMessage.warning('请先认证')
+    let title;
+    if (icon) {
+      title = icon.title;
+    } else if (!!filterText.value) {
+      title = filterText.value
+    } else {
+      return ElMessage.warning('请输入客户端名字或者选择已有客户端')
+    }
+    const code = passwordAndTitleToCode(fingerprint.password, title)
+    console.log(code)
   } else {
+    ElMessage.warning('请先认证')
   }
 };
 
-const isDarkNow = computed(() => isDark.value);
-const filterText = ref('');
-const iconsResult = computed(() => {
-  resetPage();
-  const result = []
-  for (let iconsKey in icons) {
-    const item = icons[iconsKey as keyof typeof icons];
-    if (filterText.value) {
-      if (item.title.toLowerCase().includes(filterText.value.toLowerCase())) {
-        result.push(item);
-      }
-    } else {
-      result.push(item);
-    }
-  }
-  return result;
-});
+// 分页
 const pageSize = ref(420);
 const total = computed(() => iconsResult.value.length);
 const currentPage = ref(1);
@@ -50,10 +47,31 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
   currentPage.value = val;
 };
+// 条件
+const filterText = ref('');
+// 结果集
+const iconsResult = computed(() => {
+  resetPage();
+  const result = []
+  for (let iconsKey in icons) {
+    const item = icons[iconsKey as keyof typeof icons];
+    if (filterText.value) {
+      if (item.title.toLowerCase().includes(filterText.value.toLowerCase())) {
+        result.push(item);
+      }
+    } else {
+      result.push(item);
+    }
+  }
+  return result;
+});
+
+// 为svg添加颜色
 const getSVG = (svg: string) => {
   return svg.replace(/<path /g, '<path fill="currentColor" ')
 }
-
+// 调整颜色适配白天和黑夜两个模式
+const isDarkNow = computed(() => isDark.value);
 const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
   let color = "#" + colorHex;
   let isDaytime = !isDark.value;
@@ -78,13 +96,13 @@ const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
 <template>
   <div class="icons">
     <div class="select-line">
-      <el-input class="select-input" v-model="filterText" placeholder="查询公钥" clearable></el-input>
-      <el-button clearable>生成密码</el-button>
+      <el-input class="select-input" v-model="filterText" placeholder="客户端" clearable></el-input>
+      <el-button clearable @click="selectIcon()">生成密码</el-button>
     </div>
     <div class="grid-container">
       <div class="scroll-box">
-        <el-card class="card" body-style="padding: 0;" :style="{color: adjustColor(isDarkNow,icon.hex)}"
-                 v-for="icon in pageIcons" :key="icon.title">
+        <el-card class="card pointer" body-style="padding: 0;" :style="{color: adjustColor(isDarkNow,icon.hex)}"
+                 v-for="icon in pageIcons" :key="icon.title" @click="selectIcon(icon)">
           <div class="img" v-html="getSVG(icon.svg)"></div>
           <div class="text">{{ icon.title }}</div>
         </el-card>
@@ -102,6 +120,9 @@ const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
         :total="total">
     </el-pagination>
   </div>
+  <el-drawer v-model="drawer" direction="btt">
+
+  </el-drawer>
 </template>
 
 <style scoped lang="scss">
@@ -141,7 +162,8 @@ const adjustColor = (isDark: Ref<boolean>, colorHex: string): string => {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      justify-content: space-between
+      justify-content: space-between;
+      align-content: flex-start;
     }
 
     .card {

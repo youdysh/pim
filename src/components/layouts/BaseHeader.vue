@@ -5,6 +5,7 @@ import {ElMessage} from 'element-plus'
 import {useFingerprint} from '~/store/fingerprint'
 import {SHA256} from 'crypto-js';
 import {hexToOther} from "~/components/util";
+import {Sunny, Moon} from "@element-plus/icons-vue";
 
 const fingerprint = useFingerprint()
 const password = ref("")
@@ -28,7 +29,8 @@ const certified = () => {
 
 <template>
   <div class="header">
-    <el-button v-if="fingerprint.password" class="un-certified" @click="fingerprint.setPassword('')">退出认证
+    <el-button v-if="fingerprint.password" class="un-certified" @click="fingerprint.setPassword('')">
+      退出认证
     </el-button>
     <template v-else>
       <el-input placeholder="主密码" class="master-password" v-model="password" show-password></el-input>
@@ -37,7 +39,7 @@ const certified = () => {
     </template>
 
     <el-switch size="large" class="dark-selector" v-model="isDark"
-               active-icon="Moon" inactive-icon="Sunny" :class="isDark ? 'dark' : 'light'"
+               :active-icon="Moon" :inactive-icon="Sunny" :class="isDark ? 'dark' : 'light'"
                inline-prompt active-color="#2c2c2c" inactive-color="#f2f2f2"></el-switch>
   </div>
 </template>
@@ -69,7 +71,7 @@ const certified = () => {
 
   .dark-selector {
     &.light {
-      :deep(.ep-icon) {
+      :deep(.el-icon) {
         color: var(--ep-color-black)
       }
     }

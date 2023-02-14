@@ -8,17 +8,15 @@ import store from "./store";
 // import "element-plus/dist/index.css";
 
 // or use cdn, uncomment cdn link in `index.html`
-
 import "~/styles/index.scss";
 import 'uno.css'
 
 // If you want to use ElMessage, import it.
 import "element-plus/theme-chalk/src/message.scss"
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import {useMyPlugins} from "~/plugin";
 
 const app = createApp(App)
 app.use(store)
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
-}
-app.mount("#app");
+
+app.use(useMyPlugins)
+app.mount('#app')

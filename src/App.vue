@@ -2,17 +2,17 @@
 import Icons from "~/components/Icons.vue";
 </script>
 <template>
-  <el-config-provider namespace="ep">
-    <div class="app">
-      <div class="header">
-        <base-header></base-header>
-      </div>
-      <div class="main">
-        <icons></icons>
-      </div>
-      <div class="footer">友点意思</div>
+  <!--  <el-config-provider namespace="ep">-->
+  <div class="app">
+    <div class="header">
+      <base-header></base-header>
     </div>
-  </el-config-provider>
+    <div class="main">
+      <icons></icons>
+    </div>
+    <div class="foote center">ydys</div>
+  </div>
+  <!--  </el-config-provider>-->
 </template>
 
 <style lang="scss" scoped>
