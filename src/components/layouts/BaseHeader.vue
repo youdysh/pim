@@ -29,13 +29,13 @@ const certified = () => {
 
 <template>
   <div class="header">
-    <el-button v-if="fingerprint.password" class="un-certified" @click="fingerprint.setPassword('')">
+    <el-button v-if="fingerprint.password" class="un-certified" @click="fingerprint.setPassword('')" type="primary">
       退出认证
     </el-button>
     <template v-else>
       <el-input placeholder="主密码" class="master-password" v-model="password" show-password></el-input>
       <el-input placeholder="再次输入主密码" class="master-password" v-model="passwordAgain" show-password></el-input>
-      <el-button class="certified" @click="certified">认证</el-button>
+      <el-button class="certified" @click="certified" type="primary">认证</el-button>
     </template>
 
     <el-switch size="large" class="dark-selector" v-model="isDark"

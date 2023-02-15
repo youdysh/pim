@@ -37,14 +37,13 @@ const bigLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const numbers = "0123456789";
 const specialCharacters = "!@?#*,.+-=/";
 export const checkPassword = (password: string) => {
-
-    // const numberCount = password.match(/\d/g)?.length;
-    // const smallLetterCount = password.match(/[a-z]/g)?.length;
-    // const bigLetterCount = password.match(/[A-Z]/g)?.length;
-    // const specialCount = password.match(/[!@?#*,.+-=/]/g)?.length;
-    // if (numberCount === 0) {
-    //     password += smallLetters[smallLetterCount % 24]
-    // }
+    const status = {
+        numberCount: password.match(/\d/g)?.length,
+        smallLetterCount: password.match(/[a-z]/g)?.length,
+        bigLetterCount: password.match(/[A-Z]/g)?.length,
+        specialCount: password.match(/[!@?#*,.+-=/]/g)?.length,
+    }
+    console.log(status)
 
     return password
 }

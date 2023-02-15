@@ -10,7 +10,7 @@ import Icons from "~/components/Icons.vue";
     <div class="main">
       <icons></icons>
     </div>
-    <div class="foote center">ydys</div>
+    <div class="footer center">ydys</div>
   </div>
   <!--  </el-config-provider>-->
 </template>
@@ -26,6 +26,9 @@ import Icons from "~/components/Icons.vue";
   height: 100%;
 
   .header {
+    margin: 0 auto;
+    max-width: 950px;
+    width: calc(100% - 10px);
     height: 50px;
     border-bottom: 1px solid var(--ep-border-color);
     position: relative;
@@ -41,6 +44,8 @@ import Icons from "~/components/Icons.vue";
   }
 
   .footer {
+    margin: 0 auto;
+    max-width: 950px;
     height: 80px;
     border-top: 1px solid var(--ep-border-color);
     position: relative;

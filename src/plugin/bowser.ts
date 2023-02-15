@@ -1,8 +1,11 @@
 import Bowser from "bowser";
+import {ref} from "vue";
 
-const browser = Bowser.getParser(window.navigator.userAgent);
-if (browser.getResult().os.name === "Windows") {
-    import("~/styles/scroll.css");
+export const useBrowser = () => {
+    const browser = ref(Bowser.getParser(window.navigator.userAgent));
+    if (browser.value.getResult().os.name === "Windows") {
+        import("~/styles/scroll.css");
+    }
+    console.log(browser)
+    return browser;
 }
-console.log(browser)
-export default browser;

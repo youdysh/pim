@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {ref, computed, Ref, reactive} from 'vue';
-import * as icons from 'simple-icons';
+import {computed, reactive, Ref, ref} from 'vue';
 import type {SimpleIcon} from 'simple-icons';
+import * as icons from 'simple-icons';
 import chroma from 'chroma-js';
 import {isDark} from "~/composables";
 import {useFingerprint} from '~/store/fingerprint'
 import {ElMessage} from "element-plus";
-import {hexToOther, passwordAndTitleToCode} from "~/components/util";
+import {checkPassword, hexToOther, passwordAndTitleToCode} from "~/components/util";
 import {SHA256} from "crypto-js";
 
 const fingerprint = useFingerprint()
@@ -24,24 +24,37 @@ const selectIcon = (icon?: SimpleIcon) => {
     const code = passwordAndTitleToCode(fingerprint.password, title)
     const sha256 = SHA256(code).toString()
     const baseString = hexToOther(sha256)
-    const password = checkPassword(baseString);
-    drawer.password = password
+    drawer.password = checkPassword(baseString)
     drawer.title = title
     drawer.open = true
-    // 检查baseString是否拥有数字大小写字母以及符号
-
   } else {
     ElMessage.warning('请先认证')
   }
 };
+// 弹出层数据状态
 const drawer = reactive({
   password: "",
   title: "",
   open: false
 })
-const handleCurrentChange = (val: number) => {
-  currentPage.value = val;
+const passwordInput = ref()
+const copyPassword = (type: string) => {
+  passwordInput.value.select()
+  const bool = document.execCommand('copy');
+  if (bool) {
+    return ElMessage.success(type === 'clear' ? '剪切板密码已清除' : '复制成功')
+  }
+  // todo execCommand已过时
 };
+const clearClipboard = () => {
+  drawer.password = ""
+  copyPassword("clear")
+}
+const closeDrawer = () => {
+  drawer.password = ""
+  drawer.title = ""
+  drawer.open = false
+}
 // 条件
 const filterText = ref('');
 // 结果集
@@ -66,6 +79,9 @@ const total = computed(() => iconsResult.value.length);
 const currentPage = ref(1);
 const resetPage = () => {
   currentPage.value = 1;
+};
+const handleCurrentChange = (val: number) => {
+  currentPage.value = val;
 };
 const handleSizeChange = (val: number) => {
   currentPage.value = 1;
@@ -108,7 +124,7 @@ const getSVG = (svg: string) => {
   <div class="icons">
     <div class="select-line">
       <el-input class="select-input" v-model="filterText" placeholder="客户端" clearable></el-input>
-      <el-button clearable @click="selectIcon()">生成密码</el-button>
+      <el-button clearable @click="selectIcon()" type="primary">生成密码</el-button>
     </div>
     <div class="grid-container">
       <div class="scroll-box">
@@ -131,8 +147,13 @@ const getSVG = (svg: string) => {
         :total="total">
     </el-pagination>
   </div>
-  <el-drawer v-model="drawer.open" direction="btt">
-
+  <el-drawer v-model="drawer.open" direction="btt" :title="drawer.title" :before-close="closeDrawer">
+    <!--    <div>唯一密钥</div>-->
+    <el-input :model-value="drawer.password" type="textarea" ref="passwordInput"></el-input>
+    <div class="mt-10">
+      <el-button type="primary" @click="copyPassword" :disabled="!!!drawer.password">复制</el-button>
+      <el-button type="primary" @click="clearClipboard">清空设备剪切板</el-button>
+    </div>
   </el-drawer>
 </template>
 
