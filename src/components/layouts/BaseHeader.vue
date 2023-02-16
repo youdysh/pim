@@ -28,7 +28,7 @@ const certified = () => {
 </script>
 
 <template>
-  <div class="header">
+  <div class="base-header">
     <el-button v-if="fingerprint.password" class="un-certified" @click="fingerprint.setPassword('')" type="primary">
       退出认证
     </el-button>
@@ -44,10 +44,11 @@ const certified = () => {
   </div>
 </template>
 <style scoped lang="scss">
-.header {
+.base-header {
   display: flex;
   margin-left: 10px;
   margin-right: 10px;
+  width: calc(100% - 20px);
   align-items: center;
   justify-content: flex-end;
 
