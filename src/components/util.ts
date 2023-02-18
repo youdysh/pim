@@ -43,7 +43,7 @@ export const checkPassword = (password: string) => {
         bigLetterCount: password.match(/[A-Z]/g)?.length,
         specialCount: password.match(/[!@?#*,.+-=/]/g)?.length,
     }
-    console.log(status)
 
+    console.log(status)
     return password
 }

@@ -28,7 +28,7 @@ import Icons from "~/components/Icons.vue";
   .header {
     margin: 0 auto;
     max-width: 950px;
-    width: calc(100% - 10px);
+    width: 100%;
     height: 50px;
     border-bottom: 1px solid var(--ep-border-color);
     position: relative;
